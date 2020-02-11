@@ -1,5 +1,8 @@
 import re
 from bs4 import BeautifulSoup
+import bs4
+import requests as req
+import lxml
 from urllib.parse import urlparse
 
 def extract_links(page_content):
@@ -9,7 +12,12 @@ def extract_links(page_content):
 
     soup = BeautifulSoup(page_content, 'lxml')
     for tag in soup.find_all('a', href=True):
-        links.append(tag['href'])
+        if tag['href'].startswith('http'):
+            links.append(tag['href'])
+        elif tag['href'].startswith('/'):
+            print('starting with a \, needa fix this up.')
+        else:
+            print('got some trash link: ' + tag['href'])
     return links
 
 def scraper(url, resp):
