@@ -1,13 +1,19 @@
 import re
 from urllib.parse import urlparse
+import requests as req
+import bs4
+import lxml
+
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link)]
 
+
 def extract_next_links(url, resp):
     # Implementation requred.
     return list()
+
 
 def is_valid(url):
     try:
