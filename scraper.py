@@ -1,19 +1,26 @@
 import re
+from bs4 import BeautifulSoup
 from urllib.parse import urlparse
-import requests as req
-import bs4
-import lxml
 
+def extract_links(page_content):
+    links = []
+    str_http = "href=http"
+    str_https = "href=https"
+
+    soup = BeautifulSoup(page_content, 'lxml')
+    for tag in soup.find_all('a', href=True):
+        links.append(tag['href'])
+    return links
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
+    page_links = extract_links(resp.raw_response.content)
+    print(*page_links, sep = "\n")
     return [link for link in links if is_valid(link)]
-
 
 def extract_next_links(url, resp):
     # Implementation requred.
     return list()
-
 
 def is_valid(url):
     try:
@@ -29,7 +36,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
-
+    
     except TypeError:
         print ("TypeError for ", parsed)
         raise
