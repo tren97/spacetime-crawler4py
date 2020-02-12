@@ -5,6 +5,8 @@ import requests as req
 import lxml
 from urllib.parse import urlparse
 
+seen_urls = dict()
+
 def extract_links(page_content):
     links = []
     str_http = "href=http"
@@ -28,6 +30,8 @@ def scraper(url, resp):
 
 def extract_next_links(url, resp):
     # Implementation requred.
+    page_content = resp.raw_response.content
+    seen_urls[url] = resp
     return list()
 
 def is_valid(url):
