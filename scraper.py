@@ -1,11 +1,20 @@
 import re
 from bs4 import BeautifulSoup
-import bs4
-import requests as req
 import lxml
 from urllib.parse import urlparse
+import urllib.robotparser as RobotParser
+
 
 seen_urls = {}
+
+def removeDisallowed(mainurl, urlinquestion):
+    ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
+    ### Adds the prohibited URL to seen URLS dict
+    rp = RobotParser.RobotFileParser()
+    rp.set_url(mainurl + "/robots.txt")
+    rp.read()
+    if not rp.can_fetch('*', urlinquestion):
+        seen_urls[urlinquestion] = 1
 
 def remove_url_fragment(url):
     fragment_index = url.find('#')
@@ -94,3 +103,7 @@ def is_valid(url):
     except TypeError:
         print ("TypeError for ", parsed)
         raise
+
+#removeDisallowed('https://www.foxnews.com')
+#print(removeDisallowed('https://www.stat.uci.edu', 'https://www.stat.uci.edu/wp-admin/admin-ajax.php'))
+#print(removeDisallowed('https://www.pro-football-reference.com'))
