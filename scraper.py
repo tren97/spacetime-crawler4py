@@ -7,6 +7,12 @@ from urllib.parse import urlparse
 
 seen_urls = {}
 
+def remove_url_fragment(url):
+    fragment_index = url.find('#')
+    if fragment_index == -1:
+        return url
+    return url[:fragment_index]
+
 def scraper(url, resp):
     links = list()
     if url not in seen_urls:
@@ -30,10 +36,13 @@ def extract_next_links(url, resp):
     
     soup = BeautifulSoup(page_content, 'lxml')
     for tag in soup.find_all('a', href=True):
+        tag['href'] = remove_url_fragment(tag['href'])
         if (url + tag['href']) in seen_urls:
             print('already seen ' + url + tag['href'])
             continue
-
+        if '#' in tag['href']:
+            tag['href'] = remove_url_fragment(tag['href'])
+            test_log.write('\nRemoved fragment: ' + tag['href'])
         if tag['href'].startswith('http'):
             if tag['href'] in seen_urls:
                 seen_urls[tag['href']] += 1
@@ -44,13 +53,12 @@ def extract_next_links(url, resp):
             links.append(tag['href'])
         elif tag['href'].startswith('//'):
             tag['href'] = tag['href'][2:]
-            test_log.write('\n' + tag['href'])
+            #test_log.write('\n' + tag['href'])
             if tag['href'] not in seen_urls:
                 seen_urls[tag['href']] = 1
                 links.append(tag['href'])
             else:
                 seen_urls[tag['href']] += 1
-                
         elif tag['href'].startswith('/'):
             #Pages beginning with a / or // are paths within the url.
             # I'm not 100% sure what the // means, but / is definitely
