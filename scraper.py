@@ -5,34 +5,68 @@ import requests as req
 import lxml
 from urllib.parse import urlparse
 
-seen_urls = dict()
-
-def extract_links(page_content):
-    links = []
-    str_http = "href=http"
-    str_https = "href=https"
-
-    soup = BeautifulSoup(page_content, 'lxml')
-    for tag in soup.find_all('a', href=True):
-        if tag['href'].startswith('http'):
-            links.append(tag['href'])
-        elif tag['href'].startswith('/'):
-            print('starting with a \, needa fix this up.')
-        else:
-            print('got some trash link: ' + tag['href'])
-    return links
+seen_urls = {}
 
 def scraper(url, resp):
-    links = extract_next_links(url, resp)
-    page_links = extract_links(resp.raw_response.content)
-    print(*page_links, sep = "\n")
+    links = list()
+    if url not in seen_urls:
+        links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
     # Implementation requred.
+    
+    trash_log = open('./trashlinks.txt', 'a')
+    repeat_visit_log = open('./repeats.txt', 'a')
+    child_log = open('./childpages.txt', 'a')
+    test_log = open('./testlog.txt', 'a')
+
+    if resp.raw_response is None:
+        return list()
+    
     page_content = resp.raw_response.content
-    seen_urls[url] = resp
-    return list()
+    # The fact the value is bool is just a placeholder for now.
+    links = []
+    
+    soup = BeautifulSoup(page_content, 'lxml')
+    for tag in soup.find_all('a', href=True):
+        if (url + tag['href']) in seen_urls:
+            print('already seen ' + url + tag['href'])
+            continue
+
+        if tag['href'].startswith('http'):
+            if tag['href'] in seen_urls:
+                seen_urls[tag['href']] += 1
+                repeat_visit_log.write('\nVisited: ' + tag['href'] + ' ' + str(seen_urls[tag['href']]) + ' times.')
+                continue
+            # gets all the http and https pages
+            seen_urls[tag['href']] = 1
+            links.append(tag['href'])
+        elif tag['href'].startswith('//'):
+            tag['href'] = tag['href'][2:]
+            test_log.write('\n' + tag['href'])
+            if tag['href'] not in seen_urls:
+                seen_urls[tag['href']] = 1
+                links.append(tag['href'])
+            else:
+                seen_urls[tag['href']] += 1
+                
+        elif tag['href'].startswith('/'):
+            #Pages beginning with a / or // are paths within the url.
+            # I'm not 100% sure what the // means, but / is definitely
+            # a child directory of the current directory
+            print('---->' + url + tag['href'])
+            if(url + tag['href']) not in seen_urls:
+                seen_urls[url + tag['href']] = 1
+                links.append(url + tag['href'])
+                child_log.write('\nOn website: ' + url +' found child page \n\t' + tag['href'])
+            else:
+                seen_urls[url + tag['href']] += 1
+        else:
+            # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
+            print('got some trash link: ' + tag['href'])
+            trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
+    return links
 
 def is_valid(url):
     try:
