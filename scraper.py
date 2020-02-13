@@ -6,6 +6,8 @@ import urllib.robotparser as RobotParser
 
 
 seen_urls = {}
+valid_domain = { 'ics.uci.edu':0, 'cs.uci.edu':0, 'informatics.uci.edu':0, 'stat.uci.edu':0, 'today.uci.edu/department/information_computer_sciences':0 }
+disallowed_urls = {}
 
 def removeDisallowed(mainurl, urlinquestion):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
@@ -30,7 +32,12 @@ def scraper(url, resp):
 
 def extract_next_links(url, resp):
     # Implementation requred.
+    if str(resp.status) == "404":
+        disallowed_urls[url] = 1
     
+    if url in disallowed_urls:
+        return list()
+
     trash_log = open('./trashlinks.txt', 'a')
     repeat_visit_log = open('./repeats.txt', 'a')
     child_log = open('./childpages.txt', 'a')
@@ -38,7 +45,6 @@ def extract_next_links(url, resp):
 
     if resp.raw_response is None:
         return list()
-    
     page_content = resp.raw_response.content
     # The fact the value is bool is just a placeholder for now.
     links = []
@@ -85,11 +91,36 @@ def extract_next_links(url, resp):
             trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
     return links
 
+#Refining this part to ignore the trash links :D
 def is_valid(url):
     try:
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
+        
+        test_log = open('./testlog.txt', 'a')
+        curr = str(parsed.netloc)
+
+        # this removes www
+        if curr.startswith('www'):
+            curr = str(parsed.netloc)[4:]
+            test_log.write('\nStarts with www and now equals: ' + curr)
+        
+        # if the url we are looking at is in the dict we return True 
+        if curr in valid_domain:
+            test_log.write('\n Got a good one: ' + curr)
+            return True
+        #Bail out this is for the repeating path problem, fucking trap yo
+        if len(str(url)) > 75:
+            return False
+        else:
+            test_log.write('\n Trash: ' + curr)
+            return False
+
+        # Need to check that the url can be crawled (robots.txt)
+        # Need to check if the url is within the allowed domains
+        # Need to check if the url has been visited before
+
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
