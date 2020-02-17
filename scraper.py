@@ -9,14 +9,13 @@ seen_urls = {}
 valid_domain = { 'ics.uci.edu':0, 'cs.uci.edu':0, 'informatics.uci.edu':0, 'stat.uci.edu':0, 'today.uci.edu/department/information_computer_sciences':0 }
 disallowed_urls = {}
 
-def removeDisallowed(mainurl, urlinquestion):
+def isAllowed(mainurl, urlinquestion):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
     ### Adds the prohibited URL to seen URLS dict
     rp = RobotParser.RobotFileParser()
     rp.set_url(mainurl + "/robots.txt")
     rp.read()
-    if not rp.can_fetch('*', urlinquestion):
-        seen_urls[urlinquestion] = 1
+    return rp.can_fetch('*', urlinquestion)
 
 def remove_url_fragment(url):
     fragment_index = url.find('#')
@@ -52,6 +51,9 @@ def extract_next_links(url, resp):
     soup = BeautifulSoup(page_content, 'lxml')
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
+        if not isAllowed(url, url + tag['href']):
+            print("disallowed " + url + tag['href'])
+            continue
         if (url + tag['href']) in seen_urls:
             print('already seen ' + url + tag['href'])
             continue
