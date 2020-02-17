@@ -248,9 +248,6 @@ while True:
     site = requests.get(url)
     page_content = site.content
     soup = BeautifulSoup(page_content, 'lxml')
-    if not isAllowed(url):
-        disallowed_urls[url] = 1
-        continue
     if '.ics.uci.edu' in url:
         if url in icsUrls:
             icsUrls[url] += 1
@@ -270,17 +267,15 @@ while True:
 
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
-        # if tag['href'][0] == '/':
-        #     if not isAllowed(url):
-        #         disallowed_urls[url + tag['href']] = 1
-        #         continue
-        # else:
-        #     if not isAllowed(tag['href']):
-        #         disallowed_urls[url + tag['href']] = 1
-        #         # print("disallowed " + url + tag['href'])
-        #         continue
-        if url + tag['href'] in disallowed_urls:
-            continue
+        if tag['href'][0] == '/':
+            if not isAllowed(url):
+                disallowed_urls[url + tag['href']] = 1
+                continue
+        else:
+            if not isAllowed(tag['href']):
+                disallowed_urls[url + tag['href']] = 1
+                # print("disallowed " + url + tag['href'])
+                continue
         if (url + tag['href']) in seen_urls:
             # print('already seen ' + url + tag['href'])
             continue
