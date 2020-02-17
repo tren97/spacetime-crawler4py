@@ -172,10 +172,18 @@ def is_valid(url):
             # test_log.write('\nStarts with www and now equals: ' + curr)
 
         # if the url we are looking at is in the dict we return True 
-        for val in valid_domain.keys():
-            # test_log.write('\n Got a good one: ' + curr)
-            if str(val) not in str(curr):
-                return False
+#        for val in valid_domain.keys():
+#            # test_log.write('\n Got a good one: ' + curr)
+#            if str(val) not in str(curr):
+#                return False
+
+        domain_crawlable = False
+        for val in valid_domains.keys():
+            if str(val) in str(curr):
+                domain_crawlable = True
+
+        if domain_crawlable == False:
+            return False
 
         # Bail out this is for the repeating path problem, fucking trap yo
         if '/community/events/competition' in url:
