@@ -100,7 +100,7 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
         tag['href'] = remove_url_fragment(tag['href'])
         if tag['href'][0] == '/':
             if not isAllowed(url):
-                disallowed_urls[url + tag['href']]
+                disallowed_urls[url + tag['href']] = 1
                 continue
         else:
             if not isAllowed(tag['href']):
