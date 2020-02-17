@@ -5,9 +5,7 @@ from urllib.parse import urlparse
 import urllib.robotparser as RobotParser
 
 
-seen_urls = {}
 valid_domain = { 'ics.uci.edu':0, 'cs.uci.edu':0, 'informatics.uci.edu':0, 'stat.uci.edu':0, 'today.uci.edu/department/information_computer_sciences':0 }
-disallowed_urls = {}
 
 def isAllowed(mainurl, urlinquestion):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
@@ -23,13 +21,13 @@ def remove_url_fragment(url):
         return url
     return url[:fragment_index]
 
-def scraper(url, resp):
+def scraper(url, resp, seen_urls, disallowed_urls, words, highWordCount):
     links = list()
     if url not in seen_urls:
-        links = extract_next_links(url, resp)
+        links = extract_next_links(url, resp, seen_urls, disallowed_urls, highWordCount)
     return [link for link in links if is_valid(link)]
 
-def extract_next_links(url, resp):
+def extract_next_links(url, resp, seen_urls, disallowed_urls, words, highWordCount):
     # Implementation requred.
     if str(resp.status) == "404":
         disallowed_urls[url] = 1
@@ -52,6 +50,7 @@ def extract_next_links(url, resp):
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
         if not isAllowed(url, url + tag['href']):
+            disallowed_urls[url + tag['href']] = 1
             #print("disallowed " + url + tag['href'])
             continue
         if (url + tag['href']) in seen_urls:

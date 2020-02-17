@@ -13,7 +13,6 @@ valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'st
                 'today.uci.edu/department/information_computer_sciences': 0}
 disallowed_urls = {}
 
-
 def isAllowed(mainurl, urlinquestion):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
     ### Adds the prohibited URL to seen URLS dict
@@ -183,8 +182,8 @@ def computeWordFrequencies(TextFilePath):
 # with open("LocalTesting/test1.html") as fp:
 # soup = BeautifulSoup(fp, features="lxml")
 # print(len(re.findall(r'\w+', soup.get_text())))
-site = requests.get("https://en.wikipedia.org/wiki/Billy_Volek")
-url = "https://en.wikipedia.org/wiki/Billy_Volek"
+site = requests.get("https://en.wikipedia.org/wiki/Lindell_Wigginton")
+url = "https://en.wikipedia.org/wiki/Lindell_Wigginton"
 page_content = site.content
 soup = BeautifulSoup(page_content, 'lxml')
 trash_log = open('./trashlinks.txt', 'a')
@@ -242,3 +241,5 @@ for tag in soup.find_all('a', href=True):
         # print('got some trash link: ' + tag['href'])
         trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
 print(links)
+print(disallowed_urls)
+print(seen_urls)
