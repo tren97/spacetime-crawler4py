@@ -250,7 +250,7 @@ while True:
     tokens = tokenizer.tokenize(text_from_html(soup))
     if len(tokens) > highWordNum:
         highWordUrl = url
-    filtered_sentence = [w for w in tokens if not w in stop_words]
+    filtered_sentence = [w for w in tokens if not w.lower() in stop_words]
     for word in filtered_sentence:
         if word in words:
             words[word] += 1
