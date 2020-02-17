@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import lxml
 from urllib.parse import urlparse
 import urllib.robotparser as RobotParser
-
+import nltk
 
 valid_domain = { 'ics.uci.edu':0, 'cs.uci.edu':0, 'informatics.uci.edu':0, 'stat.uci.edu':0, 'today.uci.edu/department/information_computer_sciences':0 }
 
