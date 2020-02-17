@@ -47,7 +47,7 @@ def extract_next_links(url, resp):
     page_content = resp.raw_response.content
     # The fact the value is bool is just a placeholder for now.
     links = []
-    
+
     soup = BeautifulSoup(page_content, 'lxml')
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
@@ -113,7 +113,7 @@ def is_valid(url):
             test_log.write('\n Got a good one: ' + curr)
             return True
         #Bail out this is for the repeating path problem, fucking trap yo
-        if len(str(url)) > 75:
+        if '/community/events/competition' in url:
             return False
         else:
             test_log.write('\n Trash: ' + curr)
@@ -137,6 +137,6 @@ def is_valid(url):
         print ("TypeError for ", parsed)
         raise
 
-#removeDisallowed('https://www.foxnews.com')
-#print(removeDisallowed('https://www.stat.uci.edu', 'https://www.stat.uci.edu/wp-admin/admin-ajax.php'))
+
+#print(isAllowed('https://www.stat.uci.edu', 'https://www.stat.uci.edu/wp-admin/admin-ajax.php'))
 #print(removeDisallowed('https://www.pro-football-reference.com'))
