@@ -11,6 +11,7 @@ valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'st
 disallowed_urls = {}
 
 
+
 def isAllowed(mainurl, urlinquestion):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
     ### Adds the prohibited URL to seen URLS dict
@@ -144,9 +145,7 @@ def is_valid(url):
         raise
 
 
-# with open("LocalTesting/test1.html") as fp:
-# soup = BeautifulSoup(fp, features="lxml")
-# print(len(re.findall(r'\w+', soup.get_text())))
-site = requests.get("https://www.reddit.com/r/nba/")
-src = site.content
-soup = BeautifulSoup(src, 'lxml')
+with open("LocalTesting/test1.html") as fp:
+    soup = BeautifulSoup(fp, features="lxml")
+    print(len(re.findall(r'\w+', soup.get_text())))
+#site = requests.get("https://www.fantasypros.com/nfl/stats")

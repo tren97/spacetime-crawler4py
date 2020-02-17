@@ -112,9 +112,11 @@ def is_valid(url):
         if curr in valid_domain:
             test_log.write('\n Got a good one: ' + curr)
             return True
+
         #Bail out this is for the repeating path problem, fucking trap yo
         if '/community/events/competition' in url:
             return False
+
         else:
             test_log.write('\n Trash: ' + curr)
             return False
