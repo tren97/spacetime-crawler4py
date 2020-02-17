@@ -174,8 +174,8 @@ def is_valid(url):
         # if the url we are looking at is in the dict we return True 
         for val in valid_domain.keys():
             # test_log.write('\n Got a good one: ' + curr)
-            if str(val) in str(curr):
-                return True
+            if str(val) not in str(curr):
+                return False
 
         # Bail out this is for the repeating path problem, fucking trap yo
         if '/community/events/competition' in url:
