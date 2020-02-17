@@ -18,14 +18,14 @@ class Worker(Thread):
         seenUrls = open('./seenurls.txt', 'a')
         highWord = open('./highword.txt', 'a')
         fiftyWords = open('./fiftywords.txt', 'a')
-        icsUrlsfile = open('./icsurls.txt', 'a')
+        icsUrlsFile = open('./icsurls.txt', 'a')
 
         seen_urls = {}
         disallowed_urls = {}
         words = {}
         icsUrls = {}
-        highWordUrl = []
-        highWordNum = []
+        highWordUrl = [0]*1
+        highWordNum = [0]*1
 
         while True:
             tbd_url = self.frontier.get_tbd_url()
@@ -35,7 +35,7 @@ class Worker(Thread):
                 highWord.write(str(highWordNum[0]))
                 icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
                 for val in icsUrls:
-                    icsUrlsfile.write(val[0] + ', ' + val[1] + "\n")
+                    icsUrlsFile.write(val[0] + ', ' + val[1] + "\n")
                 words = sorted(words.items(), key=itemgetter(1), reverse=True)
                 for i, val in enumerate(words):
                     if i > 49:
