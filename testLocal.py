@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Comment
 import lxml
 import urllib.robotparser as RobotParser
+from urllib.parse import urljoin
 from urllib.parse import urlparse
 import re
 import requests
@@ -281,6 +282,7 @@ while True:
             # print('got some trash link: ' + tag['href'])
             #trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
     i += 1
+
 
 # with open("LocalTesting/test1.html") as fp:
 # soup = BeautifulSoup(fp, features="lxml")

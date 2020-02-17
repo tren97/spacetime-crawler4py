@@ -4,6 +4,7 @@ from bs4.element import Comment
 import lxml
 import urllib.robotparser as RobotParser
 from urllib.parse import urlparse
+from urllib.parse import urljoin
 import re
 import requests
 import nltk
@@ -71,9 +72,10 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
     soup = BeautifulSoup(page_content, 'lxml')
     if '.ics.uci.edu' in url:
         if url in icsUrls:
-            icsUrls[url] += 1
+            icsUrls[urljoin(url, '/')[:-1]] += 1
         else:
-            icsUrls[url] = 1
+            icsUrls[urljoin(url, '/')[:-1]] = 1
+
     tokenizer = RegexpTokenizer(r'\w+')
     tokens = tokenizer.tokenize(text_from_html(soup))
     if len(tokens) > highWordNum:
@@ -121,7 +123,7 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
             if(url + tag['href']) not in seen_urls:
                 seen_urls[url + tag['href']] = 1
                 links.append(url + tag['href'])
-                child_log.write('\nOn website: ' + url +' found child page \n\t' + tag['href'])
+                #child_log.write('\nOn website: ' + url +' found child page \n\t' + tag['href'])
             else:
                 seen_urls[url + tag['href']] += 1
         #else:
