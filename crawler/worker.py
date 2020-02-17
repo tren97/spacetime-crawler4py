@@ -3,6 +3,7 @@ from threading import Thread
 from utils.download import download
 from utils import get_logger
 from scraper import scraper
+from scraper import is_valid
 from operator import itemgetter
 import time
 
@@ -29,6 +30,8 @@ class Worker(Thread):
         try:
             while True:
                 tbd_url = self.frontier.get_tbd_url()
+                if not is_valid(tbd_url):
+                    continue
                 if not tbd_url:
                     seenUrls.write(str(len(seen_urls)))
                     highWord.write(str(highWordUrl[0]) + '\n')
