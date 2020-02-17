@@ -241,4 +241,5 @@ for tag in soup.find_all('a', href=True):
         # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
         # print('got some trash link: ' + tag['href'])
         trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
+print(len(seen_urls))
 print(links)
