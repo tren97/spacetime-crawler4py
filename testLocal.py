@@ -9,6 +9,7 @@ import re
 import requests
 from collections import Counter
 import nltk
+from nltk.corpus import stopwords
 
 valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'stat.uci.edu': 0,
                 'today.uci.edu/department/information_computer_sciences': 0}
@@ -194,6 +195,8 @@ disallowed_urls = {}
 words = {}
 icsUrls = {}
 highWordUrl = ""
+highWordNum = 0
+stop_words = set(stopwords.words('english'))
 
 urls = ["https://en.wikipedia.org/wiki/Lindell_Wigginton", "https://en.wikipedia.org/wiki/Canyon_Barry", "https://en.wikipedia.org/wiki/Billy_Volek"]
 i = 0
@@ -213,17 +216,21 @@ while True:
                 fiftyWords.write(val[0] + "\n")
         print("done")
         break
-    soup = BeautifulSoup()
-    #words.write(text_from_html(soup))
-    #print(computeWordFrequencies('words.txt'))
+    url = urls[i]
+    site = requests.get(url)
+    page_content = site.content
+    soup = BeautifulSoup(page_content, 'lxml')
     tokens = nltk.word_tokenize(text_from_html(soup))
-    for word in tokens:
+    if len(tokens) > highWordNum:
+        highWordUrl = url
+    filtered_sentence = [w for w in tokens if not w in stop_words]
+    for word in filtered_sentence:
         if word in words:
             words[word] += 1
         else:
             words[word] = 1
     links = []
-    url = urls[i]
+
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
         if not isAllowed(url, url + tag['href']):
