@@ -227,7 +227,6 @@ stop_words = set(stopwords.words('english'))
 urls = ["https://www.technobuffalo.com/samsung-galaxy-s20-review", "https://www.technobuffalo.com/best-emergency-lights", "https://www.technobuffalo.com/best-electric-drills"]
 i = 0
 while True:
-
     if i > 2:
         seenUrls.write(str(len(seen_urls)) + "\n")
         seenUrls.write(str(seen_urls) + "\n")
@@ -250,6 +249,7 @@ while True:
     soup = BeautifulSoup(page_content, 'lxml')
     if not isAllowed(url):
         disallowed_urls[url] = 1
+        i+=1
         continue
     if '.ics.uci.edu' in url:
         if url in icsUrls:
