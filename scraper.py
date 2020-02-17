@@ -8,7 +8,6 @@ from urllib.parse import urljoin
 import re
 import requests
 import nltk
-
 nltk.download('stopwords')
 nltk.download('punkt')
 from nltk.corpus import stopwords
@@ -159,10 +158,8 @@ def is_valid(url):
         # if the url we are looking at is in the dict we return True 
         for val in valid_domain.keys():
             # test_log.write('\n Got a good one: ' + curr)
-            if str(curr) in str(val):
+            if str(val) in str(curr):
                 return True
-            else:
-                return False
 
         # Bail out this is for the repeating path problem, fucking trap yo
         if '/community/events/competition' in url:
