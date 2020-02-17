@@ -176,6 +176,9 @@ def is_valid(url):
         # Bail out this is for the repeating path problem, fucking trap yo
         if '/community/events/competition' in url:
             return False
+        
+        if len(url) > 100:
+            return False
 
         else:
             # test_log.write('\n Trash: ' + curr)
