@@ -33,7 +33,7 @@ def extract_next_links(url, resp):
     # Implementation requred.
     if str(resp.status) == "404":
         disallowed_urls[url] = 1
-    
+
     if url in disallowed_urls:
         return list()
 
@@ -52,10 +52,10 @@ def extract_next_links(url, resp):
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
         if not isAllowed(url, url + tag['href']):
-            print("disallowed " + url + tag['href'])
+            #print("disallowed " + url + tag['href'])
             continue
         if (url + tag['href']) in seen_urls:
-            print('already seen ' + url + tag['href'])
+            #print('already seen ' + url + tag['href'])
             continue
         if '#' in tag['href']:
             tag['href'] = remove_url_fragment(tag['href'])
@@ -70,7 +70,7 @@ def extract_next_links(url, resp):
             links.append(tag['href'])
         elif tag['href'].startswith('//'):
             tag['href'] = tag['href'][2:]
-            #test_log.write('\n' + tag['href'])
+            test_log.write('\n' + tag['href'])
             if tag['href'] not in seen_urls:
                 seen_urls[tag['href']] = 1
                 links.append(tag['href'])
@@ -80,7 +80,7 @@ def extract_next_links(url, resp):
             #Pages beginning with a / or // are paths within the url.
             # I'm not 100% sure what the // means, but / is definitely
             # a child directory of the current directory
-            print('---->' + url + tag['href'])
+            #print('---->' + url + tag['href'])
             if(url + tag['href']) not in seen_urls:
                 seen_urls[url + tag['href']] = 1
                 links.append(url + tag['href'])
@@ -89,7 +89,7 @@ def extract_next_links(url, resp):
                 seen_urls[url + tag['href']] += 1
         else:
             # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
-            print('got some trash link: ' + tag['href'])
+            #print('got some trash link: ' + tag['href'])
             trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
     return links
 
@@ -99,7 +99,7 @@ def is_valid(url):
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
-        
+
         test_log = open('./testlog.txt', 'a')
         curr = str(parsed.netloc)
 
@@ -107,7 +107,7 @@ def is_valid(url):
         if curr.startswith('www'):
             curr = str(parsed.netloc)[4:]
             test_log.write('\nStarts with www and now equals: ' + curr)
-        
+
         # if the url we are looking at is in the dict we return True 
         if curr in valid_domain:
             test_log.write('\n Got a good one: ' + curr)
@@ -134,7 +134,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
-    
+
     except TypeError:
         print ("TypeError for ", parsed)
         raise
