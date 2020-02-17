@@ -38,7 +38,7 @@ def isAllowed(mainurl, urlinquestion):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
     ### Adds the prohibited URL to seen URLS dict
     rp = RobotParser.RobotFileParser()
-    rp.set_url(mainurl + "/robots.txt")
+    rp.set_url(str(urljoin(mainurl, '/')[:-1]) + "/robots.txt")
     rp.read()
     return rp.can_fetch('*', urlinquestion)
 
@@ -190,3 +190,4 @@ def is_valid(url):
 
 # print(isAllowed('https://www.stat.uci.edu', 'https://www.stat.uci.edu/wp-admin/admin-ajax.php'))
 # print(removeDisallowed('https://www.pro-football-reference.com'))
+
