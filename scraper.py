@@ -21,13 +21,13 @@ def remove_url_fragment(url):
         return url
     return url[:fragment_index]
 
-def scraper(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl):
+def scraper(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     links = list()
     if url not in seen_urls:
-        links = extract_next_links(url, resp, seen_urls, disallowed_urls, icsUrls, highWordUrl)
+        links = extract_next_links(url, resp, seen_urls, disallowed_urls, icsUrls, highWordUrl, highWordNum)
     return [link for link in links if is_valid(link)]
 
-def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl):
+def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     # Implementation requred.
     if str(resp.status) == "404":
         disallowed_urls[url] = 1

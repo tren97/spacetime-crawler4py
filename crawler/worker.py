@@ -25,6 +25,7 @@ class Worker(Thread):
         words = {}
         icsUrls = {}
         highWordUrl = ""
+        highWordNum = 0
 
         while True:
             tbd_url = self.frontier.get_tbd_url()
@@ -46,7 +47,7 @@ class Worker(Thread):
             self.logger.info(
                 f"Downloaded {tbd_url}, status <{resp.status}>, "
                 f"using cache {self.config.cache_server}.")
-            scraped_urls = scraper(tbd_url, resp, seen_urls, disallowed_urls, words, highWordUrl)
+            scraped_urls = scraper(tbd_url, resp, seen_urls, disallowed_urls, words, highWordUrl, highWordNum)
             for scraped_url in scraped_urls:
                 self.frontier.add_url(scraped_url)
             self.frontier.mark_url_complete(tbd_url)
