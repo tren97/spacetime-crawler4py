@@ -35,13 +35,14 @@ def myfunc2(para, para2, para3, para4, para5, para6):
     para6[0] += 1
     return
 
-def isAllowed(mainurl, urlinquestion):
+def isAllowed(mainurl):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
     ### Adds the prohibited URL to seen URLS dict
     rp = RobotParser.RobotFileParser()
-    rp.set_url(mainurl + "/robots.txt")
+    tempurl = str(urljoin(mainurl, '/')[:-1])
+    rp.set_url(tempurl + "/robots.txt")
     rp.read()
-    return rp.can_fetch('*', urlinquestion)
+    return rp.can_fetch('*', mainurl)
 
 
 def remove_url_fragment(url):
@@ -80,7 +81,7 @@ def extract_next_links(url, resp):
     soup = BeautifulSoup(page_content, 'lxml')
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
-        if not isAllowed(url, url + tag['href']):
+        if not isAllowed(tag['href']):
             print("disallowed " + url + tag['href'])
             continue
         if (url + tag['href']) in seen_urls:
@@ -223,7 +224,7 @@ while True:
 
     if i > 2:
         seenUrls.write(str(len(seen_urls)) + "\n")
-        seenUrls.write(str(seen_urls))
+        seenUrls.write(str(seen_urls) + '\n')
         seen_urls.write(str(disallowed_urls))
         highWord.write(str(highWordUrl))
         icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
@@ -260,7 +261,8 @@ while True:
 
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
-        if not isAllowed(url, url + tag['href']):
+        if not isAllowed(url + tag['href']):
+            disallowed_urls[url+tag]
             # print("disallowed " + url + tag['href'])
             continue
         if (url + tag['href']) in seen_urls:

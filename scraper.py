@@ -34,13 +34,14 @@ def text_from_html(soup1):
     return u" ".join(t.strip() for t in visible_texts)
 
 
-def isAllowed(mainurl, urlinquestion):
+def isAllowed(mainurl):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
     ### Adds the prohibited URL to seen URLS dict
     rp = RobotParser.RobotFileParser()
-    rp.set_url(str(urljoin(mainurl, '/')[:-1]) + "/robots.txt")
+    tempurl = str(urljoin(mainurl, '/')[:-1])
+    rp.set_url(tempurl + "/robots.txt")
     rp.read()
-    return rp.can_fetch('*', urlinquestion)
+    return rp.can_fetch('*', mainurl)
 
 
 def remove_url_fragment(url):
