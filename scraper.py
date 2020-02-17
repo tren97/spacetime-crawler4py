@@ -161,8 +161,6 @@ def is_valid(url):
             # test_log.write('\n Got a good one: ' + curr)
             if str(curr) in str(val):
                 return True
-            else:
-                return False
 
         # Bail out this is for the repeating path problem, fucking trap yo
         if '/community/events/competition' in url:
