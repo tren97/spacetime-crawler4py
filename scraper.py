@@ -102,6 +102,17 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
             words[word] = 1
 
     for tag in soup.find_all('a', href=True):
+        if tag['href'].startswith('//'):
+            temp = tag['href'][2:]
+            if not is_valid(temp):
+                continue
+        elif tag['href'].startswith('/'):
+            if not is_valid(url + tag['href']):
+                continue
+        else:
+            if not is_valid(tag['href']):
+                continue
+
         tag['href'] = remove_url_fragment(tag['href'])
         if (url + tag['href']) in disallowed_urls:
             continue

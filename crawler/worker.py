@@ -30,8 +30,6 @@ class Worker(Thread):
         try:
             while True:
                 tbd_url = self.frontier.get_tbd_url()
-                if not is_valid(tbd_url):
-                    continue
                 if not tbd_url:
                     seenUrls.write(str(len(seen_urls)))
                     highWord.write(str(highWordUrl[0]) + '\n')
