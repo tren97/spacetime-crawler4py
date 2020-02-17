@@ -17,15 +17,10 @@ import signal
 valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'stat.uci.edu': 0,
                 'today.uci.edu/department/information_computer_sciences': 0}
 
-def keyboardInterruptHandler(signal, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
-    seenUrls = open('./seenurls.txt', 'a')
-    highWord = open('./highword.txt', 'a')
-    fiftyWords = open('./fiftywords.txt', 'a')
-    icsUrlsFile = open('./icsurls.txt', 'a')
-
+def keyboardInterruptHandler(highWord, fiftywords, icsUrlsFile, seenUrls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     seenUrls.write(str(len(seen_urls)))
-    highWord.write(str(highWordUrl[0]) + '\n')
-    highWord.write(str(highWordNum[0]))
+    highWord.write(str(highWordUrl) + '\n')
+    highWord.write(str(highWordNum)
     icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
     for val in icsUrls:
         icsUrlsFile.write(val[0] + ', ' + val[1] + "\n")
@@ -232,7 +227,7 @@ def computeWordFrequencies(TextFilePath):
 seenUrls = open('./seenurls.txt', 'a')
 highWord = open('./highword.txt', 'a')
 fiftyWords = open('./fiftywords.txt', 'a')
-icsUrls1 = open('./icsurls.txt', 'a')
+icsUrlsFile = open('./icsurls.txt', 'a')
 #repeat_visit_log = open('./repeats.txt', 'a')
 #child_log = open('./childpages.txt', 'a')
 #test_log = open('./testlog.txt', 'a')
@@ -247,7 +242,7 @@ stop_words = set(stopwords.words('english'))
 
 urls = ["http://www.nfl.com/news/story/0ap3000001102058/article/ten-wide-receivers-worth-pursuing-in-free-agency2020-nfl-draft", "http://www.nfl.com/news/story/0ap3000001102219/article/patrick-mahomes-deontay-wilder-among-most-exciting-athletes", "http://www.nfl.com/test/"]
 i = 0
-signal.signal(signal.SIGINT, keyboardInterruptHandler)
+signal.signal(signal.SIGINT, keyboardInterruptHandler(signal, highWord, fiftyWords, icsUrlsFile, ))
 while True:
     if i > 2:
         seenUrls.write(str(len(seen_urls)) + "\n")
@@ -256,7 +251,7 @@ while True:
         highWord.write(str(highWordUrl))
         icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
         for val in icsUrls:
-            icsUrls1.write(val[0] + ', ' + val[1] + "\n")
+            icsUrlsFile.write(val[0] + ', ' + val[1] + "\n")
         words = sorted(words.items(), key=itemgetter(1), reverse=True)
         for i, val in enumerate(words):
             if i > 49:
