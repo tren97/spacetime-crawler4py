@@ -59,7 +59,7 @@ def scraper(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, 
 
 def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     # Implementation requred.
-    if str(resp.status) == "404":
+    if int(resp.status) > 400:
         disallowed_urls[url] = 1
 
     if url in disallowed_urls:
@@ -72,6 +72,7 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
 
     if resp.raw_response is None:
         return list()
+
     page_content = resp.raw_response.content
     # The fact the value is bool is just a placeholder for now.
     links = []
