@@ -1,9 +1,12 @@
 from bs4 import BeautifulSoup
+from bs4.element import Comment
 import lxml
 import urllib.robotparser as RobotParser
 from urllib.parse import urlparse
 import re
 import requests
+from collections import Counter
+import nltk
 
 seen_urls = {}
 valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'stat.uci.edu': 0,
@@ -144,9 +147,98 @@ def is_valid(url):
         raise
 
 
+def tag_visible(element):
+    if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
+        return False
+    if isinstance(element, Comment):
+        return False
+    return True
+
+
+def text_from_html(soup1):
+    texts = soup1.findAll(text=True)
+    visible_texts = filter(tag_visible, texts)
+    return u" ".join(t.strip() for t in visible_texts)
+
+
+def computeWordFrequencies(TextFilePath):
+    d = {}
+    str1 = ""
+    with open(TextFilePath) as f:
+        for line in f:
+            for c in line:
+                if (c.isalnum() and c.isascii()) or c == " ":
+                    str1 += c
+                else:
+                    str1 += " "
+    for word in str1.split():
+        word = word.lower()
+        if word in d:
+            d[word] += 1
+        else:
+            d[word] = 1
+    return sum(d.values())
+
+
 # with open("LocalTesting/test1.html") as fp:
 # soup = BeautifulSoup(fp, features="lxml")
 # print(len(re.findall(r'\w+', soup.get_text())))
-site = requests.get("https://www.reddit.com/r/nba/")
-src = site.content
-soup = BeautifulSoup(src, 'lxml')
+site = requests.get("https://en.wikipedia.org/wiki/Billy_Volek")
+url = "https://en.wikipedia.org/wiki/Billy_Volek"
+page_content = site.content
+soup = BeautifulSoup(page_content, 'lxml')
+trash_log = open('./trashlinks.txt', 'a')
+repeat_visit_log = open('./repeats.txt', 'a')
+child_log = open('./childpages.txt', 'a')
+test_log = open('./testlog.txt', 'a')
+length = open('./lengthlog.txt', 'a')
+words = open('./words.txt', 'a')
+
+links = []
+# length.write(str(len(re.findall(r'\w+', soup.get_text()))))
+
+words.write(text_from_html(soup))
+print(computeWordFrequencies('words.txt'))
+for tag in soup.find_all('a', href=True):
+    tag['href'] = remove_url_fragment(tag['href'])
+    if not isAllowed(url, url + tag['href']):
+        # print("disallowed " + url + tag['href'])
+        continue
+    if (url + tag['href']) in seen_urls:
+        # print('already seen ' + url + tag['href'])
+        continue
+    if '#' in tag['href']:
+        tag['href'] = remove_url_fragment(tag['href'])
+        test_log.write('\nRemoved fragment: ' + tag['href'])
+    if tag['href'].startswith('http'):
+        if tag['href'] in seen_urls:
+            seen_urls[tag['href']] += 1
+            repeat_visit_log.write('\nVisited: ' + tag['href'] + ' ' + str(seen_urls[tag['href']]) + ' times.')
+            continue
+        # gets all the http and https pages
+        seen_urls[tag['href']] = 1
+        links.append(tag['href'])
+    elif tag['href'].startswith('//'):
+        tag['href'] = tag['href'][2:]
+        # test_log.write('\n' + tag['href'])
+        if tag['href'] not in seen_urls:
+            seen_urls[tag['href']] = 1
+            links.append(tag['href'])
+        else:
+            seen_urls[tag['href']] += 1
+    elif tag['href'].startswith('/'):
+        # Pages beginning with a / or // are paths within the url.
+        # I'm not 100% sure what the // means, but / is definitely
+        # a child directory of the current directory
+        # print('---->' + url + tag['href'])
+        if (url + tag['href']) not in seen_urls:
+            seen_urls[url + tag['href']] = 1
+            links.append(url + tag['href'])
+            child_log.write('\nOn website: ' + url + ' found child page \n\t' + tag['href'])
+        else:
+            seen_urls[url + tag['href']] += 1
+    else:
+        # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
+        # print('got some trash link: ' + tag['href'])
+        trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
+print(links)
