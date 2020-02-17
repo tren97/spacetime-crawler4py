@@ -9,7 +9,10 @@ import re
 import requests
 from collections import Counter
 import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
 from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
 
 valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'stat.uci.edu': 0,
                 'today.uci.edu/department/information_computer_sciences': 0}
@@ -201,7 +204,7 @@ stop_words = set(stopwords.words('english'))
 urls = ["https://en.wikipedia.org/wiki/Lindell_Wigginton", "https://en.wikipedia.org/wiki/Canyon_Barry", "https://en.wikipedia.org/wiki/Billy_Volek"]
 i = 0
 while True:
-    tbd_url = urls[i]
+
     if i > 2:
         seenUrls.write(str(len(seen_urls)))
         highWord.write(str(highWordUrl))
@@ -225,7 +228,8 @@ while True:
             icsUrls[url] += 1
         else:
             icsUrls[url] = 1
-    tokens = nltk.word_tokenize(text_from_html(soup))
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = tokenizer.tokenize(text_from_html(soup))
     if len(tokens) > highWordNum:
         highWordUrl = url
     filtered_sentence = [w for w in tokens if not w in stop_words]
