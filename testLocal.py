@@ -17,20 +17,6 @@ import sys
 valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'stat.uci.edu': 0,
                 'today.uci.edu/department/information_computer_sciences': 0}
 
-def keyboardInterruptHandler(highWord, fiftywords, icsUrlsFile, seenUrls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
-    seenUrls.write(str(len(seen_urls)))
-    highWord.write(str(highWordUrl) + '\n')
-    highWord.write(str(highWordNum)
-    icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
-    for val in icsUrls:
-        icsUrlsFile.write(val[0] + ', ' + val[1] + "\n")
-    words = sorted(words.items(), key=itemgetter(1), reverse=True)
-    for i, val in enumerate(words):
-        if i > 49:
-            break
-        else:
-            fiftyWords.write(val[0] + "\n")
-    exit(0)
 
 def myfunc1(para, para2, para3, para4, para5, para6):
     para['hello'] = 1
