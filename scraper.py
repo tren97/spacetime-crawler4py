@@ -13,6 +13,21 @@ from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 
 valid_domain = { 'ics.uci.edu':0, 'cs.uci.edu':0, 'informatics.uci.edu':0, 'stat.uci.edu':0, 'today.uci.edu/department/information_computer_sciences':0 }
+stop_words = set(stopwords.words('english'))
+
+def tag_visible(element):
+    if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
+        return False
+    if isinstance(element, Comment):
+        return False
+    return True
+
+
+def text_from_html(soup1):
+    texts = soup1.findAll(text=True)
+    visible_texts = filter(tag_visible, texts)
+    return u" ".join(t.strip() for t in visible_texts)
+
 
 def isAllowed(mainurl, urlinquestion):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
@@ -42,10 +57,10 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
     if url in disallowed_urls:
         return list()
 
-    trash_log = open('./trashlinks.txt', 'a')
+    #trash_log = open('./trashlinks.txt', 'a')
     repeat_visit_log = open('./repeats.txt', 'a')
     child_log = open('./childpages.txt', 'a')
-    test_log = open('./testlog.txt', 'a')
+    #test_log = open('./testlog.txt', 'a')
 
     if resp.raw_response is None:
         return list()
@@ -54,6 +69,22 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
     links = []
 
     soup = BeautifulSoup(page_content, 'lxml')
+    if '.ics.uci.edu' in url:
+        if url in icsUrls:
+            icsUrls[url] += 1
+        else:
+            icsUrls[url] = 1
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = tokenizer.tokenize(text_from_html(soup))
+    if len(tokens) > highWordNum:
+        highWordUrl = url
+    filtered_sentence = [w for w in tokens if not w in stop_words]
+    for word in filtered_sentence:
+        if word in words:
+            words[word] += 1
+        else:
+            words[word] = 1
+
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
         if not isAllowed(url, url + tag['href']):
@@ -65,7 +96,7 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
             continue
         if '#' in tag['href']:
             tag['href'] = remove_url_fragment(tag['href'])
-            test_log.write('\nRemoved fragment: ' + tag['href'])
+        #    test_log.write('\nRemoved fragment: ' + tag['href'])
         if tag['href'].startswith('http'):
             if tag['href'] in seen_urls:
                 seen_urls[tag['href']] += 1
@@ -76,7 +107,7 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
             links.append(tag['href'])
         elif tag['href'].startswith('//'):
             tag['href'] = tag['href'][2:]
-            test_log.write('\n' + tag['href'])
+            #test_log.write('\n' + tag['href'])
             if tag['href'] not in seen_urls:
                 seen_urls[tag['href']] = 1
                 links.append(tag['href'])
@@ -93,10 +124,10 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
                 child_log.write('\nOn website: ' + url +' found child page \n\t' + tag['href'])
             else:
                 seen_urls[url + tag['href']] += 1
-        else:
+        #else:
             # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
             #print('got some trash link: ' + tag['href'])
-            trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
+            #trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
     return links
 
 #Refining this part to ignore the trash links :D
@@ -106,17 +137,17 @@ def is_valid(url):
         if parsed.scheme not in set(["http", "https"]):
             return False
 
-        test_log = open('./testlog.txt', 'a')
+       # test_log = open('./testlog.txt', 'a')
         curr = str(parsed.netloc)
 
         # this removes www
         if curr.startswith('www'):
             curr = str(parsed.netloc)[4:]
-            test_log.write('\nStarts with www and now equals: ' + curr)
+            #test_log.write('\nStarts with www and now equals: ' + curr)
 
         # if the url we are looking at is in the dict we return True 
         if curr in valid_domain:
-            test_log.write('\n Got a good one: ' + curr)
+            #test_log.write('\n Got a good one: ' + curr)
             return True
 
         #Bail out this is for the repeating path problem, fucking trap yo
@@ -124,7 +155,7 @@ def is_valid(url):
             return False
 
         else:
-            test_log.write('\n Trash: ' + curr)
+           # test_log.write('\n Trash: ' + curr)
             return False
 
         # Need to check that the url can be crawled (robots.txt)
