@@ -336,7 +336,7 @@ except KeyboardInterrupt:
             break
         else:
             fiftyWords.write(val[0] + "\n")
-    print("done")
+    print("catch")
     sys.exit()
 
 # with open("LocalTesting/test1.html") as fp:
