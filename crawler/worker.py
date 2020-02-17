@@ -3,6 +3,7 @@ from threading import Thread
 from utils.download import download
 from utils import get_logger
 from scraper import scraper
+from operator import itemgetter
 import time
 
 
@@ -16,16 +17,24 @@ class Worker(Thread):
     def run(self):
         uniqueUrls = open('./uniqueurls.txt', 'a')
         highWord = open('./highword.txt', 'a')
+        fiftyWords = open('./fiftywords.txt', 'a')
+
         seen_urls = {}
         disallowed_urls = {}
         words = {}
-        highWordCount = 0
+        highWordUrl = ""
         while True:
             tbd_url = self.frontier.get_tbd_url()
             if not tbd_url:
                 self.logger.info("Frontier is empty. Stopping Crawler.")
                 uniqueUrls.write(str(len(seen_urls)))
-                highWord.write(str(highWordCount))
+                highWord.write(str(highWordUrl))
+                words = sorted(words.items(), key=itemgetter(1))
+                for i, val in enumerate(words):
+                    if i > 49:
+                        break
+                    else:
+                        fiftyWords.write(val[0] + "\n")
                 break
             resp = download(tbd_url, self.config, self.logger)
             self.logger.info(
