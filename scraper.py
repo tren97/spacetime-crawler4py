@@ -94,6 +94,7 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
     tokens = tokenizer.tokenize(text_from_html(soup))
     if len(tokens) > highWordNum[0]:
         highWordUrl[0] = url
+        highWordNum[0] = len(tokens)
     filtered_sentence = [w for w in tokens if not w in stop_words]
     for word in filtered_sentence:
         if word in words:
