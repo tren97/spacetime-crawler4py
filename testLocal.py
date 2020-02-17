@@ -12,9 +12,30 @@ nltk.download('stopwords')
 nltk.download('punkt')
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
+import signal
 
 valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'stat.uci.edu': 0,
                 'today.uci.edu/department/information_computer_sciences': 0}
+
+def keyboardInterruptHandler(signal, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
+    seenUrls = open('./seenurls.txt', 'a')
+    highWord = open('./highword.txt', 'a')
+    fiftyWords = open('./fiftywords.txt', 'a')
+    icsUrlsFile = open('./icsurls.txt', 'a')
+
+    seenUrls.write(str(len(seen_urls)))
+    highWord.write(str(highWordUrl[0]) + '\n')
+    highWord.write(str(highWordNum[0]))
+    icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
+    for val in icsUrls:
+        icsUrlsFile.write(val[0] + ', ' + val[1] + "\n")
+    words = sorted(words.items(), key=itemgetter(1), reverse=True)
+    for i, val in enumerate(words):
+        if i > 49:
+            break
+        else:
+            fiftyWords.write(val[0] + "\n")
+    exit(0)
 
 def myfunc1(para, para2, para3, para4, para5, para6):
     para['hello'] = 1
@@ -224,10 +245,10 @@ highWordUrl = ""
 highWordNum = 0
 stop_words = set(stopwords.words('english'))
 
-urls = ["http://www.nfl.com/news/story/0ap3000001102058/article/ten-wide-receivers-worth-pursuing-in-free-agency2020-nfl-draft", "http://www.nfl.com/news/story/0ap3000001102219/article/patrick-mahomes-deontay-wilder-among-most-exciting-athletes", "http://www.nfl.com/test"]
+urls = ["http://www.nfl.com/news/story/0ap3000001102058/article/ten-wide-receivers-worth-pursuing-in-free-agency2020-nfl-draft", "http://www.nfl.com/news/story/0ap3000001102219/article/patrick-mahomes-deontay-wilder-among-most-exciting-athletes", "http://www.nfl.com/test/"]
 i = 0
+signal.signal(signal.SIGINT, keyboardInterruptHandler)
 while True:
-
     if i > 2:
         seenUrls.write(str(len(seen_urls)) + "\n")
         seenUrls.write(str(seen_urls) + "\n")

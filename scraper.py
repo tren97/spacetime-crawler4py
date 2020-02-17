@@ -17,7 +17,6 @@ valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'st
                 'today.uci.edu/department/information_computer_sciences': 0}
 stop_words = set(stopwords.words('english'))
 
-
 # source: https://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
 def tag_visible(element):
     if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
