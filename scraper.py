@@ -173,9 +173,6 @@ def is_valid(url):
         if len(url) > 100:
             return False
 
-        else:
-            # test_log.write('\n Trash: ' + curr)
-            return False
 
         # Need to check that the url can be crawled (robots.txt)
         # Need to check if the url is within the allowed domains
