@@ -224,7 +224,7 @@ highWordUrl = ""
 highWordNum = 0
 stop_words = set(stopwords.words('english'))
 
-urls = ["https://www.technobuffalo.com/samsung-galaxy-s20-review", "https://www.technobuffalo.com/best-emergency-lights", "https://www.technobuffalo.com/best-electric-drills"]
+urls = ["http://www.nfl.com/news/story/0ap3000001102087/article/anthony-lynn-tyrod-taylor-could-be-chargers-qb", "http://www.nfl.com/news/story/0ap3000001102219/article/patrick-mahomes-deontay-wilder-among-most-exciting-athletes", "http://www.nfl.com/test/"]
 i = 0
 while True:
 
@@ -250,6 +250,7 @@ while True:
     soup = BeautifulSoup(page_content, 'lxml')
     if not isAllowed(url):
         disallowed_urls[url] = 1
+        i += 1
         continue
     if '.ics.uci.edu' in url:
         if url in icsUrls:
@@ -279,8 +280,8 @@ while True:
         #         disallowed_urls[url + tag['href']] = 1
         #         # print("disallowed " + url + tag['href'])
         #         continue
-        if (url + tag['href']) in disallowed_urls:
-            continue
+        #if (url + tag['href']) in disallowed_urls:
+            #continue
         if (url + tag['href']) in seen_urls:
             # print('already seen ' + url + tag['href'])
             continue
