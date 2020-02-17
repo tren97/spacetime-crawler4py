@@ -15,20 +15,25 @@ class Worker(Thread):
         super().__init__(daemon=True)
         
     def run(self):
-        uniqueUrls = open('./uniqueurls.txt', 'a')
+        seenUrls = open('./seenurls.txt', 'a')
         highWord = open('./highword.txt', 'a')
         fiftyWords = open('./fiftywords.txt', 'a')
+        icsUrls = open('./icsurls.txt', 'a')
 
         seen_urls = {}
         disallowed_urls = {}
         words = {}
+        icsUrls = {}
         highWordUrl = ""
 
         while True:
             tbd_url = self.frontier.get_tbd_url()
             if not tbd_url:
-                uniqueUrls.write(str(len(seen_urls)))
+                seenUrls.write(str(len(seen_urls)))
                 highWord.write(str(highWordUrl))
+                icsUrls = sorted(icsUrls.items(), key=itemgetter(1))
+                for val in icsUrls:
+                    icsUrls.write(val[0] + ', ' + val[1] + "\n")
                 words = sorted(words.items(), key=itemgetter(1))
                 for i, val in enumerate(words):
                     if i > 49:
