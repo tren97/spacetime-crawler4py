@@ -217,12 +217,13 @@ highWordUrl = ""
 highWordNum = 0
 stop_words = set(stopwords.words('english'))
 
-urls = ["https://en.wikipedia.org/wiki/Lindell_Wigginton", "https://en.wikipedia.org/wiki/Canyon_Barry", "https://en.wikipedia.org/wiki/Billy_Volek"]
+urls = ["https://www.foxnews.com/politics/barr-taps-network-of-prosecutors-to-review-russia-ukraine-investigations", "https://www.cnn.com/2020/02/16/politics/parscale-tweet-daytona-500-air-force-one-photo/index.html", "https://www.rt.com/usa/480982-trump-daytona-500-limo/", "https://www.reuters.com/article/us-russia-usa-pompeo/russias-lavrov-after-pompeo-meeting-says-felt-more-constructive-u-s-approach-idUSKBN20B1PV"]
 i = 0
 while True:
 
     if i > 2:
-        seenUrls.write(str(len(seen_urls)))
+        seenUrls.write(str(len(seen_urls)) + "\n")
+        seenUrls.write(str(seen_urls))
         highWord.write(str(highWordUrl))
         icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
         for val in icsUrls:
