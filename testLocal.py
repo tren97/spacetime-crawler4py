@@ -224,6 +224,7 @@ while True:
     if i > 2:
         seenUrls.write(str(len(seen_urls)) + "\n")
         seenUrls.write(str(seen_urls))
+        seen_urls.write(str(disallowed_urls))
         highWord.write(str(highWordUrl))
         icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
         for val in icsUrls:
