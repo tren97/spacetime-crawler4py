@@ -267,7 +267,7 @@ while True:
 
     for tag in soup.find_all('a', href=True):
         tag['href'] = remove_url_fragment(tag['href'])
-        if tag['href'][0] == '/':
+        if tag['href'].startswith('/'):
             if not isAllowed(url):
                 disallowed_urls[url + tag['href']] = 1
                 continue
