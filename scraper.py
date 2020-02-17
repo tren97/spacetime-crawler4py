@@ -178,11 +178,11 @@ def is_valid(url):
 #                return False
 
         domain_crawlable = False
-        for val in valid_domains.keys():
+        for val in valid_domain.keys():
             if str(val) in str(curr):
                 domain_crawlable = True
 
-        if domain_crawlable == False:
+        if not domain_crawlable:
             return False
 
         # Bail out this is for the repeating path problem, fucking trap yo
