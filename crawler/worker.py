@@ -18,24 +18,25 @@ class Worker(Thread):
         seenUrls = open('./seenurls.txt', 'a')
         highWord = open('./highword.txt', 'a')
         fiftyWords = open('./fiftywords.txt', 'a')
-        icsUrls = open('./icsurls.txt', 'a')
+        icsUrlsfile = open('./icsurls.txt', 'a')
 
         seen_urls = {}
         disallowed_urls = {}
         words = {}
         icsUrls = {}
-        highWordUrl = ""
-        highWordNum = 0
+        highWordUrl = []
+        highWordNum = []
 
         while True:
             tbd_url = self.frontier.get_tbd_url()
             if not tbd_url:
                 seenUrls.write(str(len(seen_urls)))
-                highWord.write(str(highWordUrl))
-                icsUrls = sorted(icsUrls.items(), key=itemgetter(1))
+                highWord.write(str(highWordUrl[0]) + '\n')
+                highWord.write(str(highWordNum[0]))
+                icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
                 for val in icsUrls:
-                    icsUrls.write(val[0] + ', ' + val[1] + "\n")
-                words = sorted(words.items(), key=itemgetter(1))
+                    icsUrlsfile.write(val[0] + ', ' + val[1] + "\n")
+                words = sorted(words.items(), key=itemgetter(1), reverse=True)
                 for i, val in enumerate(words):
                     if i > 49:
                         break

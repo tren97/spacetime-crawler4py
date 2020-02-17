@@ -47,7 +47,7 @@ def remove_url_fragment(url):
 def scraper(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     links = list()
     if url not in seen_urls:
-        links = extract_next_links(url, resp, seen_urls, disallowed_urls, icsUrls, highWordUrl, highWordNum)
+        links = extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum)
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
@@ -78,8 +78,8 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
 
     tokenizer = RegexpTokenizer(r'\w+')
     tokens = tokenizer.tokenize(text_from_html(soup))
-    if len(tokens) > highWordNum:
-        highWordUrl = url
+    if len(tokens) > highWordNum[0]:
+        highWordUrl[0] = url
     filtered_sentence = [w for w in tokens if not w in stop_words]
     for word in filtered_sentence:
         if word in words:
