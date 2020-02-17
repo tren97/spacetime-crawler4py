@@ -74,11 +74,16 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
     if resp.raw_response is None:
         return list()
 
+    if not isAllowed(url):
+        disallowed_urls[url] = 1
+        return list()
+
     page_content = resp.raw_response.content
     # The fact the value is bool is just a placeholder for now.
     links = []
 
     soup = BeautifulSoup(page_content, 'lxml')
+
     if '.ics.uci.edu' in url:
         if url in icsUrls:
             icsUrls[urljoin(url, '/')[:-1]] += 1
@@ -194,6 +199,6 @@ def is_valid(url):
         print("TypeError for ", parsed)
         raise
 
-# print(isAllowed('https://www.stat.uci.edu', 'https://www.stat.uci.edu/wp-admin/admin-ajax.php'))
+#print(isAllowed('http://www.nfl.com/test/'))
 # print(removeDisallowed('https://www.pro-football-reference.com'))
 
