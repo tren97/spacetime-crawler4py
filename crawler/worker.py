@@ -23,10 +23,10 @@ class Worker(Thread):
         disallowed_urls = {}
         words = {}
         highWordUrl = ""
+
         while True:
             tbd_url = self.frontier.get_tbd_url()
             if not tbd_url:
-                self.logger.info("Frontier is empty. Stopping Crawler.")
                 uniqueUrls.write(str(len(seen_urls)))
                 highWord.write(str(highWordUrl))
                 words = sorted(words.items(), key=itemgetter(1))
@@ -35,6 +35,7 @@ class Worker(Thread):
                         break
                     else:
                         fiftyWords.write(val[0] + "\n")
+                self.logger.info("Frontier is empty. Stopping Crawler.")
                 break
             resp = download(tbd_url, self.config, self.logger)
             self.logger.info(
