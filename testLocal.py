@@ -220,6 +220,11 @@ while True:
     site = requests.get(url)
     page_content = site.content
     soup = BeautifulSoup(page_content, 'lxml')
+    if '.ics.uci.edu' in url:
+        if url in icsUrls:
+            icsUrls[url] += 1
+        else:
+            icsUrls[url] = 1
     tokens = nltk.word_tokenize(text_from_html(soup))
     if len(tokens) > highWordNum:
         highWordUrl = url
