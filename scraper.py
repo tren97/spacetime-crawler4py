@@ -8,14 +8,18 @@ from urllib.parse import urljoin
 import re
 import requests
 import nltk
+
 nltk.download('stopwords')
 nltk.download('punkt')
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 
-valid_domain = { 'ics.uci.edu':0, 'cs.uci.edu':0, 'informatics.uci.edu':0, 'stat.uci.edu':0, 'today.uci.edu/department/information_computer_sciences':0 }
+valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'stat.uci.edu': 0,
+                'today.uci.edu/department/information_computer_sciences': 0}
 stop_words = set(stopwords.words('english'))
 
+
+# source: https://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
 def tag_visible(element):
     if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
         return False
@@ -24,6 +28,7 @@ def tag_visible(element):
     return True
 
 
+# source: https://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
 def text_from_html(soup1):
     texts = soup1.findAll(text=True)
     visible_texts = filter(tag_visible, texts)
@@ -38,17 +43,20 @@ def isAllowed(mainurl, urlinquestion):
     rp.read()
     return rp.can_fetch('*', urlinquestion)
 
+
 def remove_url_fragment(url):
     fragment_index = url.find('#')
     if fragment_index == -1:
         return url
     return url[:fragment_index]
 
+
 def scraper(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     links = list()
     if url not in seen_urls:
         links = extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum)
     return [link for link in links if is_valid(link)]
+
 
 def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     # Implementation requred.
@@ -58,10 +66,10 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
     if url in disallowed_urls:
         return list()
 
-    #trash_log = open('./trashlinks.txt', 'a')
-    #repeat_visit_log = open('./repeats.txt', 'a')
-    #child_log = open('./childpages.txt', 'a')
-    #test_log = open('./testlog.txt', 'a')
+    # trash_log = open('./trashlinks.txt', 'a')
+    # repeat_visit_log = open('./repeats.txt', 'a')
+    # child_log = open('./childpages.txt', 'a')
+    # test_log = open('./testlog.txt', 'a')
 
     if resp.raw_response is None:
         return list()
@@ -91,10 +99,10 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
         tag['href'] = remove_url_fragment(tag['href'])
         if not isAllowed(url, url + tag['href']):
             disallowed_urls[url + tag['href']] = 1
-            #print("disallowed " + url + tag['href'])
+            # print("disallowed " + url + tag['href'])
             continue
         if (url + tag['href']) in seen_urls:
-            #print('already seen ' + url + tag['href'])
+            # print('already seen ' + url + tag['href'])
             continue
         if '#' in tag['href']:
             tag['href'] = remove_url_fragment(tag['href'])
@@ -102,62 +110,63 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
         if tag['href'].startswith('http'):
             if tag['href'] in seen_urls:
                 seen_urls[tag['href']] += 1
-                #repeat_visit_log.write('\nVisited: ' + tag['href'] + ' ' + str(seen_urls[tag['href']]) + ' times.')
+                # repeat_visit_log.write('\nVisited: ' + tag['href'] + ' ' + str(seen_urls[tag['href']]) + ' times.')
                 continue
             # gets all the http and https pages
             seen_urls[tag['href']] = 1
             links.append(tag['href'])
         elif tag['href'].startswith('//'):
             tag['href'] = tag['href'][2:]
-            #test_log.write('\n' + tag['href'])
+            # test_log.write('\n' + tag['href'])
             if tag['href'] not in seen_urls:
                 seen_urls[tag['href']] = 1
                 links.append(tag['href'])
             else:
                 seen_urls[tag['href']] += 1
         elif tag['href'].startswith('/'):
-            #Pages beginning with a / or // are paths within the url.
+            # Pages beginning with a / or // are paths within the url.
             # I'm not 100% sure what the // means, but / is definitely
             # a child directory of the current directory
-            #print('---->' + url + tag['href'])
-            if(url + tag['href']) not in seen_urls:
+            # print('---->' + url + tag['href'])
+            if (url + tag['href']) not in seen_urls:
                 seen_urls[url + tag['href']] = 1
                 links.append(url + tag['href'])
-                #child_log.write('\nOn website: ' + url +' found child page \n\t' + tag['href'])
+                # child_log.write('\nOn website: ' + url +' found child page \n\t' + tag['href'])
             else:
                 seen_urls[url + tag['href']] += 1
-        #else:
-            # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
-            #print('got some trash link: ' + tag['href'])
-            #trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
+        # else:
+        # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
+        # print('got some trash link: ' + tag['href'])
+        # trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
     return links
 
-#Refining this part to ignore the trash links :D
+
+# Refining this part to ignore the trash links :D
 def is_valid(url):
     try:
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
 
-       # test_log = open('./testlog.txt', 'a')
+        # test_log = open('./testlog.txt', 'a')
         curr = str(parsed.netloc)
 
         # this removes www
         if curr.startswith('www'):
             curr = str(parsed.netloc)[4:]
-            #test_log.write('\nStarts with www and now equals: ' + curr)
+            # test_log.write('\nStarts with www and now equals: ' + curr)
 
         # if the url we are looking at is in the dict we return True 
         if curr in valid_domain:
-            #test_log.write('\n Got a good one: ' + curr)
+            # test_log.write('\n Got a good one: ' + curr)
             return True
 
-        #Bail out this is for the repeating path problem, fucking trap yo
+        # Bail out this is for the repeating path problem, fucking trap yo
         if '/community/events/competition' in url:
             return False
 
         else:
-           # test_log.write('\n Trash: ' + curr)
+            # test_log.write('\n Trash: ' + curr)
             return False
 
         # Need to check that the url can be crawled (robots.txt)
@@ -175,9 +184,8 @@ def is_valid(url):
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
     except TypeError:
-        print ("TypeError for ", parsed)
+        print("TypeError for ", parsed)
         raise
 
-
-#print(isAllowed('https://www.stat.uci.edu', 'https://www.stat.uci.edu/wp-admin/admin-ajax.php'))
-#print(removeDisallowed('https://www.pro-football-reference.com'))
+# print(isAllowed('https://www.stat.uci.edu', 'https://www.stat.uci.edu/wp-admin/admin-ajax.php'))
+# print(removeDisallowed('https://www.pro-football-reference.com'))
