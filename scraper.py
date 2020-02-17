@@ -59,8 +59,8 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
         return list()
 
     #trash_log = open('./trashlinks.txt', 'a')
-    repeat_visit_log = open('./repeats.txt', 'a')
-    child_log = open('./childpages.txt', 'a')
+    #repeat_visit_log = open('./repeats.txt', 'a')
+    #child_log = open('./childpages.txt', 'a')
     #test_log = open('./testlog.txt', 'a')
 
     if resp.raw_response is None:
@@ -102,7 +102,7 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
         if tag['href'].startswith('http'):
             if tag['href'] in seen_urls:
                 seen_urls[tag['href']] += 1
-                repeat_visit_log.write('\nVisited: ' + tag['href'] + ' ' + str(seen_urls[tag['href']]) + ' times.')
+                #repeat_visit_log.write('\nVisited: ' + tag['href'] + ' ' + str(seen_urls[tag['href']]) + ' times.')
                 continue
             # gets all the http and https pages
             seen_urls[tag['href']] = 1
