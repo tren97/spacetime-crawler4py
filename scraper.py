@@ -1,9 +1,16 @@
-import re
+from operator import itemgetter
 from bs4 import BeautifulSoup
+from bs4.element import Comment
 import lxml
-from urllib.parse import urlparse
 import urllib.robotparser as RobotParser
+from urllib.parse import urlparse
+import re
+import requests
 import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
+from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
 
 valid_domain = { 'ics.uci.edu':0, 'cs.uci.edu':0, 'informatics.uci.edu':0, 'stat.uci.edu':0, 'today.uci.edu/department/information_computer_sciences':0 }
 

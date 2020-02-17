@@ -1,5 +1,4 @@
 from operator import itemgetter
-
 from bs4 import BeautifulSoup
 from bs4.element import Comment
 import lxml
@@ -7,7 +6,6 @@ import urllib.robotparser as RobotParser
 from urllib.parse import urlparse
 import re
 import requests
-from collections import Counter
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -208,10 +206,10 @@ while True:
     if i > 2:
         seenUrls.write(str(len(seen_urls)))
         highWord.write(str(highWordUrl))
-        icsUrls = sorted(icsUrls.items(), key=itemgetter(1))
+        icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
         for val in icsUrls:
             icsUrls1.write(val[0] + ', ' + val[1] + "\n")
-        words = sorted(words.items(), key=itemgetter(1))
+        words = sorted(words.items(), key=itemgetter(1), reverse=True)
         for i, val in enumerate(words):
             if i > 49:
                 break
