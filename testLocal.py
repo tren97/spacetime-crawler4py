@@ -201,104 +201,104 @@ def computeWordFrequencies(TextFilePath):
     return sum(d.values())
 
 
-# seenUrls = open('./seenurls.txt', 'a')
-# highWord = open('./highword.txt', 'a')
-# fiftyWords = open('./fiftywords.txt', 'a')
-# icsUrls1 = open('./icsurls.txt', 'a')
-# repeat_visit_log = open('./repeats.txt', 'a')
-# child_log = open('./childpages.txt', 'a')
-# test_log = open('./testlog.txt', 'a')
-#
-# seen_urls = {}
-# disallowed_urls = {}
-# words = {}
-# icsUrls = {}
-# highWordUrl = ""
-# highWordNum = 0
-# stop_words = set(stopwords.words('english'))
-#
-# urls = ["https://en.wikipedia.org/wiki/Lindell_Wigginton", "https://en.wikipedia.org/wiki/Canyon_Barry", "https://en.wikipedia.org/wiki/Billy_Volek"]
-# i = 0
-# while True:
-#
-#     if i > 2:
-#         seenUrls.write(str(len(seen_urls)))
-#         highWord.write(str(highWordUrl))
-#         icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
-#         for val in icsUrls:
-#             icsUrls1.write(val[0] + ', ' + val[1] + "\n")
-#         words = sorted(words.items(), key=itemgetter(1), reverse=True)
-#         for i, val in enumerate(words):
-#             if i > 49:
-#                 break
-#             else:
-#                 fiftyWords.write(val[0] + "\n")
-#         print("done")
-#         break
-#     url = urls[i]
-#     site = requests.get(url)
-#     page_content = site.content
-#     soup = BeautifulSoup(page_content, 'lxml')
-#     if '.ics.uci.edu' in url:
-#         if url in icsUrls:
-#             icsUrls[url] += 1
-#         else:
-#             icsUrls[url] = 1
-#     tokenizer = RegexpTokenizer(r'\w+')
-#     tokens = tokenizer.tokenize(text_from_html(soup))
-#     if len(tokens) > highWordNum:
-#         highWordUrl = url
-#     filtered_sentence = [w for w in tokens if not w in stop_words]
-#     for word in filtered_sentence:
-#         if word in words:
-#             words[word] += 1
-#         else:
-#             words[word] = 1
-#     links = []
-#
-#     for tag in soup.find_all('a', href=True):
-#         tag['href'] = remove_url_fragment(tag['href'])
-#         if not isAllowed(url, url + tag['href']):
-#             # print("disallowed " + url + tag['href'])
-#             continue
-#         if (url + tag['href']) in seen_urls:
-#             # print('already seen ' + url + tag['href'])
-#             continue
-#         if '#' in tag['href']:
-#             tag['href'] = remove_url_fragment(tag['href'])
-#             test_log.write('\nRemoved fragment: ' + tag['href'])
-#         if tag['href'].startswith('http'):
-#             if tag['href'] in seen_urls:
-#                 seen_urls[tag['href']] += 1
-#                 repeat_visit_log.write('\nVisited: ' + tag['href'] + ' ' + str(seen_urls[tag['href']]) + ' times.')
-#                 continue
-#             # gets all the http and https pages
-#             seen_urls[tag['href']] = 1
-#             links.append(tag['href'])
-#         elif tag['href'].startswith('//'):
-#             tag['href'] = tag['href'][2:]
-#             # test_log.write('\n' + tag['href'])
-#             if tag['href'] not in seen_urls:
-#                 seen_urls[tag['href']] = 1
-#                 links.append(tag['href'])
-#             else:
-#                 seen_urls[tag['href']] += 1
-#         elif tag['href'].startswith('/'):
-#             # Pages beginning with a / or // are paths within the url.
-#             # I'm not 100% sure what the // means, but / is definitely
-#             # a child directory of the current directory
-#             # print('---->' + url + tag['href'])
-#             if (url + tag['href']) not in seen_urls:
-#                 seen_urls[url + tag['href']] = 1
-#                 links.append(url + tag['href'])
-#                 child_log.write('\nOn website: ' + url + ' found child page \n\t' + tag['href'])
-#             else:
-#                 seen_urls[url + tag['href']] += 1
-#         #else:
-#             # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
-#             # print('got some trash link: ' + tag['href'])
-#             #trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
-#     i += 1
+seenUrls = open('./seenurls.txt', 'a')
+highWord = open('./highword.txt', 'a')
+fiftyWords = open('./fiftywords.txt', 'a')
+icsUrls1 = open('./icsurls.txt', 'a')
+#repeat_visit_log = open('./repeats.txt', 'a')
+#child_log = open('./childpages.txt', 'a')
+#test_log = open('./testlog.txt', 'a')
+
+seen_urls = {}
+disallowed_urls = {}
+words = {}
+icsUrls = {}
+highWordUrl = ""
+highWordNum = 0
+stop_words = set(stopwords.words('english'))
+
+urls = ["https://en.wikipedia.org/wiki/Lindell_Wigginton", "https://en.wikipedia.org/wiki/Canyon_Barry", "https://en.wikipedia.org/wiki/Billy_Volek"]
+i = 0
+while True:
+
+    if i > 2:
+        seenUrls.write(str(len(seen_urls)))
+        highWord.write(str(highWordUrl))
+        icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
+        for val in icsUrls:
+            icsUrls1.write(val[0] + ', ' + val[1] + "\n")
+        words = sorted(words.items(), key=itemgetter(1), reverse=True)
+        for i, val in enumerate(words):
+            if i > 49:
+                break
+            else:
+                fiftyWords.write(val[0] + "\n")
+        print("done")
+        break
+    url = urls[i]
+    site = requests.get(url)
+    page_content = site.content
+    soup = BeautifulSoup(page_content, 'lxml')
+    if '.ics.uci.edu' in url:
+        if url in icsUrls:
+            icsUrls[url] += 1
+        else:
+            icsUrls[url] = 1
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = tokenizer.tokenize(text_from_html(soup))
+    if len(tokens) > highWordNum:
+        highWordUrl = url
+    filtered_sentence = [w for w in tokens if not w in stop_words]
+    for word in filtered_sentence:
+        if word in words:
+            words[word] += 1
+        else:
+            words[word] = 1
+    links = []
+
+    for tag in soup.find_all('a', href=True):
+        tag['href'] = remove_url_fragment(tag['href'])
+        if not isAllowed(url, url + tag['href']):
+            # print("disallowed " + url + tag['href'])
+            continue
+        if (url + tag['href']) in seen_urls:
+            # print('already seen ' + url + tag['href'])
+            continue
+        if '#' in tag['href']:
+            tag['href'] = remove_url_fragment(tag['href'])
+            #test_log.write('\nRemoved fragment: ' + tag['href'])
+        if tag['href'].startswith('http'):
+            if tag['href'] in seen_urls:
+                seen_urls[tag['href']] += 1
+               # repeat_visit_log.write('\nVisited: ' + tag['href'] + ' ' + str(seen_urls[tag['href']]) + ' times.')
+                continue
+            # gets all the http and https pages
+            seen_urls[tag['href']] = 1
+            links.append(tag['href'])
+        elif tag['href'].startswith('//'):
+            tag['href'] = tag['href'][2:]
+            # test_log.write('\n' + tag['href'])
+            if tag['href'] not in seen_urls:
+                seen_urls[tag['href']] = 1
+                links.append(tag['href'])
+            else:
+                seen_urls[tag['href']] += 1
+        elif tag['href'].startswith('/'):
+            # Pages beginning with a / or // are paths within the url.
+            # I'm not 100% sure what the // means, but / is definitely
+            # a child directory of the current directory
+            # print('---->' + url + tag['href'])
+            if (url + tag['href']) not in seen_urls:
+                seen_urls[url + tag['href']] = 1
+                links.append(url + tag['href'])
+                #child_log.write('\nOn website: ' + url + ' found child page \n\t' + tag['href'])
+            else:
+                seen_urls[url + tag['href']] += 1
+        #else:
+            # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
+            # print('got some trash link: ' + tag['href'])
+            #trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
+    i += 1
 
 
 # with open("LocalTesting/test1.html") as fp:
