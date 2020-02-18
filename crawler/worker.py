@@ -36,13 +36,13 @@ class Worker(Thread):
                     highWord.write(str(highWordNum[0]))
                     icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
                     for val in icsUrls:
-                        icsUrlsFile.write(val[0] + ', ' + val[1] + "\n")
+                        icsUrlsFile.write(str(val[0]) + ', ' + str(val[1]) + "\n")
                     words = sorted(words.items(), key=itemgetter(1), reverse=True)
                     for i, val in enumerate(words):
                         if i > 49:
                             break
                         else:
-                            fiftyWords.write(val[0] + "\n")
+                            fiftyWords.write(str(val[0]) + "\n")
                     self.logger.info("Frontier is empty. Stopping Crawler.")
                     break
                 resp = download(tbd_url, self.config, self.logger)
@@ -60,10 +60,10 @@ class Worker(Thread):
             highWord.write(str(highWordNum[0]))
             icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
             for val in icsUrls:
-                icsUrlsFile.write(val[0] + ', ' + val[1] + "\n")
+                icsUrlsFile.write(str(val[0]) + ', ' + str(val[1]) + "\n")
             words = sorted(words.items(), key=itemgetter(1), reverse=True)
             for i, val in enumerate(words):
                 if i > 49:
                     break
                 else:
-                    fiftyWords.write(val[0] + "\n")
+                    fiftyWords.write(str(val[0]) + "\n")
