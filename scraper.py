@@ -17,10 +17,10 @@ valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'st
                 'today.uci.edu/department/information_computer_sciences': 0}
 stop_words = set(stopwords.words('english'))
 
-seenENL = open('./seenENL.txt', 'w+')
-highENL = open('./highENL.txt', 'w+')
-fiftyENL = open('./fiftyENL.txt', 'w+')
-icsUrlsENL = open('./icsurlsENL.txt', 'w+')
+seenENL = open('./seenENL.txt', 'w')
+highENL = open('./highENL.txt', 'w')
+fiftyENL = open('./fiftyENL.txt', 'w')
+icsUrlsENL = open('./icsurlsENL.txt', 'w')
 
 # source: https://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
 def tag_visible(element):
@@ -45,7 +45,7 @@ def is_path_trap(url):
     for word in word_list:
         if word in word_dict:
             word_dict[word] += 1
-            if word_dict[word] == 2:
+            if word_dict[word] == 3:
                 return True
         else:
             word_dict[word] = 1
