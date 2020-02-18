@@ -80,11 +80,11 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
     seenENL.write(str(len(seen_urls)))
     highENL.write(str(highWordUrl[0]) + '\n')
     highENL.write(str(highWordNum[0]))
-    icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
-    for val in icsUrls:
+    icsUrls1 = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
+    for val in icsUrls1:
         icsUrlsENL.write(str(val[0]) + ', ' + str(val[1]) + "\n")
-    words = sorted(words.items(), key=itemgetter(1), reverse=True)
-    for i, val in enumerate(words):
+    words1 = sorted(words.items(), key=itemgetter(1), reverse=True)
+    for i, val in enumerate(words1):
         if i > 49:
             break
         else:
