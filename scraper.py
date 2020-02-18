@@ -32,6 +32,19 @@ def text_from_html(soup1):
     visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
 
+def is_path_trap(url):
+    word_dict = {}
+    parsed = urlparse(url)
+    url_path = str(parsed.path)
+    word_list = url_path.split()
+    for word in word_list:
+        if word in word_dict:
+            word_dict[word] += 1
+            if word_dict[word] == 2:
+                return True
+            else:
+                word_dict[word] = 1
+    return False
 
 def isAllowed(mainurl):
     ### Takes the stock website url and another url and checks if the given url is present in the main url's robot.txt file
