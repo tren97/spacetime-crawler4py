@@ -220,8 +220,8 @@ def is_valid(url):
             return False
         if '/degrees/' in url:
             return False
-        if is_path_trap(url):
-            return False
+        #if is_path_trap(url):
+           # return False
         if len(url) > 100:
             return False
 
