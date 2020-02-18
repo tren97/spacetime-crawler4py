@@ -17,6 +17,11 @@ valid_domain = {'ics.uci.edu': 0, 'cs.uci.edu': 0, 'informatics.uci.edu': 0, 'st
                 'today.uci.edu/department/information_computer_sciences': 0}
 stop_words = set(stopwords.words('english'))
 
+seenENL = open('./seenENL.txt', 'w+')
+highENL = open('./highENL.txt', 'w+')
+fiftyENL = open('./fiftyENL.txt', 'w+')
+icsUrlsENL = open('./icsurlsENL.txt', 'w+')
+
 # source: https://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
 def tag_visible(element):
     if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -72,16 +77,25 @@ def scraper(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, 
 
 def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     # Implementation requred.
+
+    seenENL.write(str(len(seen_urls)))
+    highENL.write(str(highWordUrl[0]) + '\n')
+    highENL.write(str(highWordNum[0]))
+    icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
+    for val in icsUrls:
+        icsUrlsENL.write(str(val[0]) + ', ' + str(val[1]) + "\n")
+    words = sorted(words.items(), key=itemgetter(1), reverse=True)
+    for i, val in enumerate(words):
+        if i > 49:
+            break
+        else:
+            fiftyENL.write(str(val[0]) + "\n")
+
     if int(resp.status) > 400:
         disallowed_urls[url] = 1
 
     if url in disallowed_urls:
         return list()
-
-    # trash_log = open('./trashlinks.txt', 'a')
-    # repeat_visit_log = open('./repeats.txt', 'a')
-    # child_log = open('./childpages.txt', 'a')
-    # test_log = open('./testlog.txt', 'a')
 
     if resp.raw_response is None:
         return list()
@@ -166,6 +180,7 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
         # grabs a lot of mailto's and fragments (#) maybe some other unimportant stuff as well
         # print('got some trash link: ' + tag['href'])
         # trash_log.write('\nFound some garbage (or did I?): ' + tag['href'])
+
     return links
 
 

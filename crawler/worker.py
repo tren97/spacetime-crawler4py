@@ -27,43 +27,31 @@ class Worker(Thread):
         icsUrls = {}
         highWordUrl = [0]*1
         highWordNum = [0]*1
-        try:
-            while True:
-                tbd_url = self.frontier.get_tbd_url()
-                if not tbd_url or len(seen_urls) > 10000:
-                    seenUrls.write(str(len(seen_urls)))
-                    highWord.write(str(highWordUrl[0]) + '\n')
-                    highWord.write(str(highWordNum[0]))
-                    icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
-                    for val in icsUrls:
-                        icsUrlsFile.write(str(val[0]) + ', ' + str(val[1]) + "\n")
-                    words = sorted(words.items(), key=itemgetter(1), reverse=True)
-                    for i, val in enumerate(words):
-                        if i > 49:
-                            break
-                        else:
-                            fiftyWords.write(str(val[0]) + "\n")
-                    self.logger.info("Frontier is empty. Stopping Crawler.")
-                    break
-                resp = download(tbd_url, self.config, self.logger)
-                self.logger.info(
-                    f"Downloaded {tbd_url}, status <{resp.status}>, "
-                    f"using cache {self.config.cache_server}.")
-                scraped_urls = scraper(tbd_url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum)
-                for scraped_url in scraped_urls:
-                    self.frontier.add_url(scraped_url)
-                self.frontier.mark_url_complete(tbd_url)
-                time.sleep(self.config.time_delay)
-        except KeyboardInterrupt:
-            seenUrls.write(str(len(seen_urls)))
-            highWord.write(str(highWordUrl[0]) + '\n')
-            highWord.write(str(highWordNum[0]))
-            icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
-            for val in icsUrls:
-                icsUrlsFile.write(str(val[0]) + ', ' + str(val[1]) + "\n")
-            words = sorted(words.items(), key=itemgetter(1), reverse=True)
-            for i, val in enumerate(words):
-                if i > 49:
-                    break
-                else:
-                    fiftyWords.write(str(val[0]) + "\n")
+
+        while True:
+            tbd_url = self.frontier.get_tbd_url()
+            if not tbd_url or len(seen_urls) > 10000:
+                seenUrls.write(str(len(seen_urls)))
+                highWord.write(str(highWordUrl[0]) + '\n')
+                highWord.write(str(highWordNum[0]))
+                icsUrls = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
+                for val in icsUrls:
+                    icsUrlsFile.write(str(val[0]) + ', ' + str(val[1]) + "\n")
+                words = sorted(words.items(), key=itemgetter(1), reverse=True)
+                for i, val in enumerate(words):
+                    if i > 49:
+                        break
+                    else:
+                        fiftyWords.write(str(val[0]) + "\n")
+                self.logger.info("Frontier is empty. Stopping Crawler.")
+                break
+            resp = download(tbd_url, self.config, self.logger)
+            self.logger.info(
+                f"Downloaded {tbd_url}, status <{resp.status}>, "
+                f"using cache {self.config.cache_server}.")
+            scraped_urls = scraper(tbd_url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum)
+            for scraped_url in scraped_urls:
+                self.frontier.add_url(scraped_url)
+            self.frontier.mark_url_complete(tbd_url)
+            time.sleep(self.config.time_delay)
+
