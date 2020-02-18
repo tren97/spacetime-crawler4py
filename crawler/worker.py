@@ -30,7 +30,7 @@ class Worker(Thread):
 
         while True:
             tbd_url = self.frontier.get_tbd_url()
-            if not tbd_url or len(seen_urls) > 10000:
+            if not tbd_url or len(seen_urls.keys()) > 10000:
                 seenUrls.write(str(len(seen_urls)))
                 highWord.write(str(highWordUrl[0]) + '\n')
                 highWord.write(str(highWordNum[0]))

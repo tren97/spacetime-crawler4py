@@ -77,7 +77,7 @@ def scraper(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, 
 
 def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     # Implementation requred.
-    seenENL.write(str(len(seen_urls)))
+    seenENL.write(str(len(seen_urls.keys())))
     highENL.write(str(highWordUrl[0]) + '\n')
     highENL.write(str(highWordNum[0]))
     icsUrls1 = sorted(icsUrls.items(), key=itemgetter(1), reverse=True)
