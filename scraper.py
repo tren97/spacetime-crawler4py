@@ -36,7 +36,7 @@ def is_path_trap(url):
     word_dict = {}
     parsed = urlparse(url)
     url_path = str(parsed.path)
-    word_list = url_path.split()
+    word_list = url_path.split('/')
     for word in word_list:
         if word in word_dict:
             word_dict[word] += 1
@@ -205,7 +205,8 @@ def is_valid(url):
             return False
         if '/calendar' in url:
             return False
-        
+
+
         if len(url) > 100:
             return False
 
