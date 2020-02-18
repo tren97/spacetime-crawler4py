@@ -139,6 +139,9 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
         else:
             if not is_valid(tag['href']):
                 continue
+            
+        if is_path_trap(tag['href']):
+            continue
 
         tag['href'] = remove_url_fragment(tag['href'])
         if (url + tag['href']) in disallowed_urls:
