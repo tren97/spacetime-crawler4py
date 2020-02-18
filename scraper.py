@@ -47,8 +47,8 @@ def is_path_trap(url):
             word_dict[word] += 1
             if word_dict[word] == 2:
                 return True
-            else:
-                word_dict[word] = 1
+        else:
+            word_dict[word] = 1
     return False
 
 def isAllowed(mainurl):
@@ -77,7 +77,6 @@ def scraper(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, 
 
 def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, highWordUrl, highWordNum):
     # Implementation requred.
-
     seenENL.write(str(len(seen_urls)))
     highENL.write(str(highWordUrl[0]) + '\n')
     highENL.write(str(highWordNum[0]))
@@ -139,10 +138,6 @@ def extract_next_links(url, resp, seen_urls, disallowed_urls, words, icsUrls, hi
         else:
             if not is_valid(tag['href']):
                 continue
-            
-        if is_path_trap(tag['href']):
-            continue
-
         tag['href'] = remove_url_fragment(tag['href'])
         if (url + tag['href']) in disallowed_urls:
             continue
@@ -225,7 +220,8 @@ def is_valid(url):
             return False
         if '/degrees/' in url:
             return False
-
+        if is_path_trap(url):
+            return False
         if len(url) > 100:
             return False
 
@@ -250,4 +246,3 @@ def is_valid(url):
 
 #print(isAllowed('http://www.nfl.com/test/'))
 # print(removeDisallowed('https://www.pro-football-reference.com'))
-
